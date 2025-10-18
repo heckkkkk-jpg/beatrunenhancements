@@ -1627,10 +1627,10 @@ local function JumpThink()
 			input.SelectWeapon(ply:GetWeapon("runnerhands"))
 
 			usingHands = true
-			
+
 			if IsValid(BodyAnim) then
 				if ply:GetWallrun() == 1 then -- 1 = verticaL
-					BodyLimitX = 25 
+					BodyLimitX = 25
 					BodyLimitY = 70
 
 					BodyAnim:SetSequence("wallrunverticalstart")
