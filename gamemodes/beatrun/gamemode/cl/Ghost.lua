@@ -22,7 +22,6 @@ local Ghost_lastTick = 0
 local con_RecordingBool = false
 local con_PlayingBool = false
 
-
 cvars.AddChangeCallback("Beatrun_CourseGhost", function(convar_name, value_old, value_new)
 	if value_new == "0" then
 		StopGhostRecording(false, false)
@@ -32,8 +31,7 @@ end)
 
 local function GhostRecording()
 	local ply = LocalPlayer()
-
-	if engine.TickCount() > Record_lastTick then -- might be a better way to do this idk
+	if engine.TickCount() > Record_lastTick then
 		Record_tickcount = Record_tickcount + 1
 		Record_lastTick = engine.TickCount()
 	else
@@ -47,7 +45,14 @@ local function GhostRecording()
 
 	-- print(Record_tickcount)
 
-	Ghost_dataBuffer[Record_tickcount] = {ply:EyeAngles(), ply:GetPos(), ply:GetSequenceName(ply:GetSequence()), ply:GetCycle()}
+	Ghost_dataBuffer[Record_tickcount] = {
+		ply:EyeAngles(),
+		ply:GetPos(),
+		ply:GetSequenceName(ply:GetSequence()),
+		ply:GetCycle(),
+		ply:GetPoseParameter("move_x") * 2 - 1, -- the x*2-1 remaps 0-1 to -1 to 1 without needing to call math.remap
+		ply:GetPoseParameter("move_y") * 2 - 1
+	}
 end
 
 function StopGhostRecording(FirstPB, PBhit)
@@ -119,7 +124,7 @@ end
 local function GhostReplay()
 	if not IsValid(playerGhost) then GhostEntInit() end
 
-	if engine.TickCount() > Ghost_lastTick then -- might be a better way to do this idk
+	if engine.TickCount() > Ghost_lastTick then
 		Ghost_tickcount = Ghost_tickcount + 1
 		Ghost_lastTick = engine.TickCount()
 	else
@@ -140,8 +145,8 @@ local function GhostReplay()
 	playerGhost:SetAngles(ang_ghost)
 	playerGhost:SetSequence(Ghost_data[Ghost_tickcount][3])
 	playerGhost:SetCycle(Ghost_data[Ghost_tickcount][4])
-	playerGhost:SetPoseParameter("move_x", 1) -- makes the animations work
-	playerGhost:SetPoseParameter("move_y", 0)
+	playerGhost:SetPoseParameter("move_x", Ghost_data[Ghost_tickcount][5] or 1)
+	playerGhost:SetPoseParameter("move_y", Ghost_data[Ghost_tickcount][6] or 0)
 
 	if playerGhost:GetPos():Distance(LocalPlayer():GetPos()) < 40 then
 		playerGhost:SetNoDraw(true)
@@ -161,7 +166,7 @@ function StopGhostReplay()
 end
 
 function StartGhostReplay()
-	if Ghost_data["Cid"] ~= Course_ID then -- if the recorded course doesnt match current course and theres no file for it then dont try to play it
+	if Ghost_data["Cid"] ~= Course_ID then
 		local ghostFile = "data/beatrun/ghost/" .. Course_ID .. ".txt"
 
 		if file.Exists(ghostFile, "GAME") then
