@@ -1062,7 +1062,17 @@ eventsounds = {
 		[0.1] = "Faith.Impact"
 	},
 	hangheaveup = {
-		[0] = "Faith.StrainMedium"
+		[0] = "Faith.StrainMedium",
+		[0.1] = "Handsteps.ConcreteHard",
+		[0.5] = "Cloth.MovementRun"
+	},
+	hangstraferight = {
+		[0.1] = "Handsteps.ConcreteSoft",
+		[0.7] = "Handsteps.ConcreteRelease"
+	},
+	hangstrafeleft = {
+		[0.1] = "Handsteps.ConcreteSoft",
+		[0.8] = "Handsteps.ConcreteRelease"
 	},
 	vaultontohigh = {
 		[0.2] = "Vault",
@@ -1124,9 +1134,9 @@ eventsounds = {
 		[0.15] = "Handsteps.Ladder"
 	},
 	jumpturnlandstand = {
-		[0.025] = "me_faith_cloth_roll_cloth.wav",
+		[0.01] = "Cloth.BodyRollSwish",
 		[0.25] = "Faith.StrainSoft",
-		[0.3] = "me_body_roll.wav"
+		[0.3] = "Cloth.BodyRoll"
 	}
 }
 
